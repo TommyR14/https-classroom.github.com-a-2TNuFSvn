@@ -28,18 +28,3 @@ for i in range(100):
     left_speed, right_speed = follower(sensor_values)
     print(f"L:{left_speed},R:{right_speed}")
     time.sleep(0.01)
-
-
-control_step(sensor_values, previous_error)
-
-
-
-calculate_line_error(left, center, right, threshold)
-
-
-
-compute_pd_output(error, previous_error, kp, kd)
-
-
-
-calculate_motor_speeds(base_speed, correction)
