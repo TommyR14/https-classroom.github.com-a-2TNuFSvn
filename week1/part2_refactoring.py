@@ -1,30 +1,30 @@
 import time
 
 
-def follower(sensor_values):
-    left_speed = sensor_values[0]
-    center = sensor_values[1]
-    right_speed = sensor_values[2]
-    if center > 0.5:
-        error = 0
-    elif left_speed > 0.5:
+def calculate_line_error(left, center, right, threshold):
+    if left > threshold:
         error = -1
-    else:
+    elif center > threshold:
+        error = 0
+    elif right > threshold:
         error = 1
-    kp = 0.5
-    kd = 0.2
-    global prev_error
-    output = kp * error + kd * (error - prev_error)
-    prev_error = error
-    base_speed = 1.0
-    left_motor = base_speed - output
-    right_motor = base_speed + output
+    return error
+
+
+def compute_pd_output(error, previous_error, kp=0.5, kd=0.2):
+    correction = kp * error + kd * (error - previous_error)
+    return correction
+
+
+def calculate_motor_speeds(base_speed, correction):
+    left_motor = base_speed - correction
+    right_motor = base_speed + correction
     return left_motor, right_motor
 
 
-prev_error = 0
-sensor_values = [0.1, 0.8, 0.1]
-for i in range(100):
-    left_speed, right_speed = follower(sensor_values)
-    print(f"L:{left_speed},R:{right_speed}")
-    time.sleep(0.01)
+def control_step(sensor_values, previous_error, base_speed=0.1):
+    left, center, right = sensor_values
+    error = calculate_line_error(left, center, right)
+    correction = compute_pd_output(error, previous_error)
+    left_speed, right_speed = calculate_motor_speeds(base_speed, correction)
+    return left_speed, right_speed, error
