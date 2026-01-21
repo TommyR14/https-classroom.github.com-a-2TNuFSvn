@@ -28,7 +28,7 @@ def calculate_motor_speeds(base_speed, correction) -> Tuple[float, float]:
 def control_step(
     sensor_values, previous_error, base_speed=0.1) -> Tuple[float, float, int]:
     left, center, right = sensor_values
-    error = calculate_line_error(left, center, right, threshold)
+    error = calculate_line_error(left, center, right, threshold) #Error under threshold
     correction = compute_pd_output(error, previous_error)
     left_speed, right_speed = calculate_motor_speeds(base_speed, correction)
-    return left_speed, right_speed, error
+    return left_speed, right_speed, error #Error after return
